@@ -19,8 +19,7 @@ def create_tables():
         """ 
         INSERT INTO taxis (id, passenger_name, destination) VALUES (3, 'Bob Johnson', 'Restaurant')
         """
-    )
-       
+    ) 
     conn = psycopg2.connect(
         port=5432,
         host="localhost",
@@ -52,18 +51,18 @@ class Taxi:
         self.trips = []
 
     def __str__(self):
-        return f"Taxi {self.id}"
+        return f"Taksi {self.id}"
 
     def beginTrip(self, destination):
         if self.passenger is not None:
-            raise Exception("A passenger is already assigned to this taxi.")
+            raise Exception("Bu taksini allaqachon yo'lovchisi bor.")
         trip = Trip(self.passenger.getPlace(), destination)
         self.trips.append(trip)
         self.passenger = None
 
     def terminateTrip(self):
         if self.passenger is None:
-            raise Exception("No passenger is currently assigned to this taxi.")
+            raise Exception("Bu taksini hozirda yo'lovchisi yo'q.")
         self.passenger = None
 
 class TaxiCompany:
@@ -72,7 +71,7 @@ class TaxiCompany:
 
     def addTaxi(self, taxi):
         if any(t.id == taxi.id for t in self.taxis):
-            raise InvalidTaxiName(f"A taxi with ID {taxi.id} already exists.")
+            raise InvalidTaxiName(f"Bu idlik taksi allaqachon bor: {taxi.id}.")
         self.taxis.append(taxi)
 
     def getAvailable(self):
@@ -82,7 +81,7 @@ class TaxiCompany:
         for taxi in self.taxis:
             if taxi.id == taxi_id:
                 return taxi.trips
-        raise InvalidTaxiName(f"No taxi found with ID {taxi_id}.")
+        raise InvalidTaxiName(f"Bu idlik taksi topilmadi: {taxi_id}.")
 
 class Passenger:
     def __init__(self, place):
@@ -92,13 +91,13 @@ class Passenger:
         return self.place
 
 class Place:
-    def __init__(self, address, district, neighborhood):
+    def __init__(self, address, tuman, mahalla):
         self.address = address
-        self.district = district
-        self.neighborhood = neighborhood
+        self.tuman = tuman
+        self.mahalla = mahalla
 
     def __str__(self):
-        return f"{self.address}, {self.district}, {self.neighborhood}"
+        return f"{self.address}, {self.tuman}, {self.mahalla}"
 
 class Trip:
     def __init__(self, start, end):
@@ -113,7 +112,7 @@ class Trip:
 
 taxiCompany = TaxiCompany()
 
-place = Place("123 Main St", "District A", "Neighborhood B")
+place = Place("Ulug'bek 13", "tuman A", "mahalla B")
 passenger = Passenger(place)
 taxi1 = Taxi(1)
 
